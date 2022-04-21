@@ -5,6 +5,8 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
+import { GameStatus } from "./MainControl";
+
 const {ccclass, property} = cc._decorator;
 
 @ccclass
@@ -26,6 +28,10 @@ export default class BirdControl extends cc.Component {
   }
 
   update (dt: number) {
+    if(this.mainControl.gameStatus !== GameStatus.Game_Playing){
+      return; 
+    }
+
     this.speed -= 0.05;
     this.node.y += this.speed;
 
@@ -38,7 +44,17 @@ export default class BirdControl extends cc.Component {
 
   onCollisionEnter (other: cc.Collider, self: cc.Collider) {
     //game over
-    this.mainControl.gameOver();
+     // collider tag is 0, that means the bird have a collision with pipe, then game over
+     if (other.tag === 0) {
+      cc.log("game over");
+      this.mainControl.gameOver();
+      this.speed = 0;
+  }
+  // collider tag is 1, that means the bird cross a pipe, then add score
+  else if (other.tag === 1) {
+      this.mainControl.gameScore++;
+      this.mainControl.labelScore.string = this.mainControl.gameScore.toString();
+  }
   }
   onTouchStart (event: cc.Event.EventTouch) {
       this.speed = 2;

@@ -7,6 +7,12 @@
 
 const {ccclass, property} = cc._decorator;
 
+export enum GameStatus{
+    Game_Ready = 0,
+    Game_Playing,
+    Game_Over,
+}
+
 @ccclass
 export default class MainControl  extends cc.Component {
 
@@ -18,22 +24,17 @@ export default class MainControl  extends cc.Component {
 
     pipe: cc.Node[] = [null, null, null]
     // LIFE-CYCLE CALLBACKS:
+    btnStart: cc.Button = null;
 
-    // onLoad () {}
+    gameStatus: GameStatus = GameStatus.Game_Ready;
 
-    start () {
-        for (let i = 0; i < this.pipe.length; i++) {
-            this.pipe[i] = cc.instantiate(this.pipePrefab);
-            this.node.addChild(this.pipe[i]);
+    @property(cc.Label)
+    labelScore: cc.Label = null;
 
-            this.pipe[i].x = 170 + 200 * i;
-            var minY = -120;
-            var maxY = 120;
-            this.pipe[i].y = minY + Math.random() * (maxY - minY);
-        }
+    // record score
+    gameScore: number = 0;
 
-        
-    }
+
     onLoad () {
         //open Collision System
         var collisionManager = cc.director.getCollisionManager();
@@ -45,11 +46,34 @@ export default class MainControl  extends cc.Component {
         // find the GameOver node, and set active property to false
         this.spGameOver = this.node.getChildByName("GameOver").getComponent(cc.Sprite);
         this.spGameOver.node.active = false;
+
+        //find clicked callback
+        this.btnStart = this.node.getChildByName("BtnStart").getComponent(cc.Button);
+        //register clicked callback
+        this.btnStart.node.on(cc.Node.EventType.TOUCH_END, this.touchStartbtn,this);
     }
 
+    start () {
+        for (let i = 0; i < this.pipe.length; i++) {
+            // this.pipe[i] = cc.instantiate(this.pipePrefab);
+            // this.node.addChild(this.pipe[i]);
 
+            this.pipe[i] = cc.instantiate(this.pipePrefab);
+            this.node.getChildByName("Pipe").addChild(this.pipe[i]);
 
+            this.pipe[i].x = 170 + 200 * i;
+            var minY = -120;
+            var maxY = 120;
+            this.pipe[i].y = minY + Math.random() * (maxY - minY);
+        }
+
+        
+    }
+    
     update (dt:number) {
+        if(this.gameStatus !== GameStatus.Game_Playing){
+            return;
+        }
         // move the background node
         for (let i = 0; i < this.spBg.length; i++) {
             this.spBg[i].node.x -= 1.0;
@@ -73,5 +97,35 @@ export default class MainControl  extends cc.Component {
 
     gameOver () {
         this.spGameOver.node.active = true;
+        //when game is over, show the start button
+        this.btnStart.node.active = true;
+        //change game status to game over;
+        this.gameStatus = GameStatus.Game_Over;
+
+    }
+
+    touchStartbtn(){
+        this.btnStart.node.active =false;
+
+        this.gameStatus = GameStatus.Game_Playing;
+
+        this.spGameOver.node.active = false;
+
+        //reset all pipe position
+        for(let i= 0 ; i< this.pipe.length; i++){
+            this.pipe[i].x = 170+200*i;
+            var minY = -120;
+            var maxY =120;
+            this.pipe[i].y = minY + Math.random() * (maxY - minY);
+        }
+        //reset angle and position of bird
+
+        var bird = this.node.getChildByName("Bird");
+        bird.y=0;
+        bird.rotation = 0;
+        
+        // reset score when restart game
+        this.gameScore = 0;
+        this.labelScore.string = this.gameScore.toString();
     }
 }
