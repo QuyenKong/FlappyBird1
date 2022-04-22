@@ -192,7 +192,7 @@
       "array": [
         0,
         0,
-        756.040177503815,
+        754.2984896852245,
         0,
         0,
         0,
@@ -1108,7 +1108,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 97.87,
+      "width": 22.25,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1159,8 +1159,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "Label",
-    "_N$string": "Label",
+    "_string": "0",
+    "_N$string": "0",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -1252,7 +1252,9 @@
     "pipePrefab": {
       "__uuid__": "90c3b092-8f9e-434a-bccf-92be7b0f64b0"
     },
-    "labelScore": null,
+    "labelScore": {
+      "__id__": 24
+    },
     "_id": "09A/H311NMe7i/vKMfc99c"
   }
 ]
