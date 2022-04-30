@@ -37,8 +37,8 @@ export default class MainControl  extends cc.Component {
 
     onLoad () {
 
-        cc.director.loadScene("main");
-        this.node.getChildByName("Canvas").getComponent(cc.Canvas).node.active = false;
+        // cc.director.loadScene("main");
+        // this.node.getChildByName("Canvas").getComponent(cc.Canvas).node.active = false;
         //open Collision System
         var collisionManager = cc.director.getCollisionManager();
         collisionManager.enabled = true;
